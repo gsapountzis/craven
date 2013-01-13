@@ -146,6 +146,18 @@ public class AccountResource {
 }
 ```
 
+## Conclusion
+
+Using interceptors programmatically requires little, namely:
+
+* the addition of an `AnnotationLiteral` subclass that implements the relevant `Annotation` interface
+  with its accompying `Builder` to simulate named optional parameters, check the `TxConfig` class.
+* the refactoring of the relevant `Interceptor` class around the `<T> T apply(<A extends Annotation>, Callable<T>)` method,
+  check the `TransactionInterceptor` class.
+
+And we have reached a state where everybody is happy (or unhappy), both new developers who are customed to
+working with a framework and older developers who have valid reasons for not using a framework in their codebase.
+
 ## Credits
 
 Copies extensively from [Java EE](http://docs.oracle.com/javaee/) and [Spring](http://www.springsource.org/).
