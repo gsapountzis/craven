@@ -11,7 +11,8 @@ a required function parameter (Function / Callable).
     final DataSource transactionalDataSource = new TransactionalDataSource(transactionManager);
     final AccountRepository accountRepository = new AccountRepository(transactionalDataSource);
 
-    Long sapId = new TransactionInterceptor(transactionManager).apply(TxConfig.propagation(REQUIRES_NEW).build(), new Callable<Long>() {
+    Transactional annotation = TxConfig.propagation(REQUIRES_NEW).build();
+    Long sapId = new TransactionInterceptor(transactionManager).apply(annotation, new Callable<Long>() {
         @Override public Long call() {
             Account sap = new Account();
             sap.setUsername("sap");
