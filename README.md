@@ -20,12 +20,12 @@ public class DataSourceProducer {
         this.dataSource = new TransactionalDataSource(transactionManager);
     }
 
-    @Produces @ApplicationScoped
+    @Produces @Singleton
     public TransactionManager produceTransactionManager() {
         return transactionManager;
     }
 
-    @Produces @ApplicationScoped
+    @Produces @Singleton
     public DataSource produceDataSource() {
         return dataSource;
     }
@@ -71,11 +71,11 @@ Either using a dependency injection framework:
 
 ```java
 public class AccountResource {
-    private final Instance<TransactionInterceptor> transactionInterceptor;
+    private final Provider<TransactionInterceptor> transactionInterceptor;
     private final AccountRepository accountRepository;
 
     @Inject
-    public AccountResource(Instance<TransactionInterceptor> transactionInterceptor,
+    public AccountResource(Provider<TransactionInterceptor> transactionInterceptor,
                            AccountRepository accountRepository) {
         this.transactionInterceptor = transactionInterceptor;
         this.accountRepository = accountRepository;
