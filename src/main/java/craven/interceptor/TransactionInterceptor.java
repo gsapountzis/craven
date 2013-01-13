@@ -24,7 +24,7 @@ public class TransactionInterceptor {
         this.tm = tm;
     }
 
-    public Object manage(final InvocationContext ic) throws Exception {
+    public Object around(final InvocationContext ic) throws Exception {
 
         Object target = ic.getTarget();
         Method method = ic.getMethod();

@@ -121,7 +121,7 @@ public class LoggingDataSourceFactory {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             try {
                 InvocationContext ic = new SimpleInvocationContext(target, method, args);
-                Object result = loggingEnabled ? interceptor.log(ic) : ic.proceed();
+                Object result = loggingEnabled ? interceptor.around(ic) : ic.proceed();
                 return resultProcessor.apply(result);
             }
             catch (InvocationTargetException ex) {

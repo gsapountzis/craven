@@ -14,7 +14,7 @@ public class LoggingInterceptor {
     public LoggingInterceptor() {
     }
 
-    public Object log(InvocationContext ic) throws Exception {
+    public Object around(InvocationContext ic) throws Exception {
         Object target = ic.getTarget();
         Method method = ic.getMethod();
         Object[] params = ic.getParameters();
