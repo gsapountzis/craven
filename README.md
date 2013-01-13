@@ -77,7 +77,7 @@ public class Application {
         DataSource transactionalDataSource = new TransactionalDataSource(transactionManager);
 
         AccountRepository accountRepository = new AccountRepository(transactionalDataSource);
-        AccountResource accountResource = new AccountResource(accountRepository);
+        AccountResource accountResource = new AccountResource(transactionManager, accountRepository);
     }
 }
 ```
