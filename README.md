@@ -8,7 +8,7 @@ Can we use the same interceptor both programmatically and declaratively ? What d
 
 ## Declarative Example
 
-This is what your are probably familiar with:
+You are probably familiar with:
 
 ```java
 public class DataSourceProducer {
@@ -107,26 +107,32 @@ public class Application {
         JdbcTransactionManager transactionManager = new JdbcTransactionManager(loggingDataSource);
         DataSource transactionalDataSource = new TransactionalDataSource(transactionManager);
 
+        Provider<TransactionInterceptor> transactionInterceptor = new Provider<TransactionInterceptor> {
+            @Override public TransactionInterceptor get() {
+                return new TransactionInterceptor(transactionManager);
+            }
+        };
+
         AccountRepository accountRepository = new AccountRepository(transactionalDataSource);
-        AccountResource accountResource = new AccountResource(transactionManager, accountRepository);
+        AccountResource accountResource = new AccountResource(transactionInterceptor, accountRepository);
     }
 }
 ```
 
 ```java
 public class AccountResource {
-    private final TransactionManager transactionManager;
+    private final Provider<TransactionInterceptor> transactionInterceptor;
     private final AccountRepository accountRepository;
 
-    public AccountResource(TransactionManager transactionManager,
+    public AccountResource(Provider<TransactionInterceptor> transactionInterceptor,
                            AccountRepository accountRepository) {
-        this.transactionManager = transactionManager;
+        this.transactionInterceptor = transactionInterceptor;
         this.accountRepository = accountRepository;
     }
 
     public Long createAccount() {
         Transactional annotation = TxConfig.propagation(REQUIRES_NEW).build();
-        return new TransactionInterceptor(transactionManager).apply(annotation, new Callable<Long>() {
+        return transactionInterceptor.get().apply(annotation, new Callable<Long>() {
             @Override public Long call() {
                 Account sap = new Account();
                 sap.setUsername("sap");
