@@ -16,7 +16,6 @@ public class DataSourceProducer {
     private final DataSource dataSource;
 
     public DataSourceProducer() {
-        DataSource mainDataSource = null; // create or lookup DataSource ...
         this.transactionManager = new JdbcTransactionManager(mainDataSource);;
         this.dataSource = new TransactionalDataSource(transactionManager);
     }
@@ -68,6 +67,38 @@ public class AccountResource {
 
 What does it take to be able to use JavaEE interceptors programmatically ?
 
+Either using a dependency injection framework:
+
+```java
+public class AccountResource {
+    private final Instance<TransactionInterceptor> transactionInterceptor;
+    private final AccountRepository accountRepository;
+
+    @Inject
+    public AccountResource(Instance<TransactionInterceptor> transactionInterceptor,
+                           AccountRepository accountRepository) {
+        this.transactionInterceptor = transactionInterceptor;
+        this.accountRepository = accountRepository;
+    }
+
+    public Long createAccount() {
+        Transactional annotation = TxConfig.propagation(REQUIRES_NEW).build();
+        return transactionInterceptor.get().apply(annotation, new Callable<Long>() {
+            @Override public Long call() {
+                Account sap = new Account();
+                sap.setUsername("sap");
+                sap.setPassword("pas");
+                sap.setEmail("gsapountzis@gmail.com");
+
+                return accountRepository.create(sap);
+            }
+        });
+    }
+}
+```
+
+Or with manual dependency injection:
+
 ```java
 public class Application {
 
@@ -87,7 +118,8 @@ public class AccountResource {
     private final TransactionManager transactionManager;
     private final AccountRepository accountRepository;
 
-    public AccountResource(TransactionManager transactionManager, AccountRepository accountRepository) {
+    public AccountResource(TransactionManager transactionManager,
+                           AccountRepository accountRepository) {
         this.transactionManager = transactionManager;
         this.accountRepository = accountRepository;
     }
