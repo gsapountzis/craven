@@ -69,23 +69,43 @@ public class AccountResource {
 What does it take to be able to use JavaEE interceptors programmatically ?
 
 ```java
-    final DataSource loggingDataSource = LoggingDataSourceFactory.create(dataSource);
-    final JdbcTransactionManager transactionManager = new JdbcTransactionManager(loggingDataSource);
-    final DataSource transactionalDataSource = new TransactionalDataSource(transactionManager);
+public class Application {
 
-    final AccountRepository accountRepository = new AccountRepository(transactionalDataSource);
+    public void init() {
+        DataSource loggingDataSource = LoggingDataSourceFactory.create(dataSource);
+        JdbcTransactionManager transactionManager = new JdbcTransactionManager(loggingDataSource);
+        DataSource transactionalDataSource = new TransactionalDataSource(transactionManager);
 
-    Transactional annotation = TxConfig.propagation(REQUIRES_NEW).build();
-    Long sapId = new TransactionInterceptor(transactionManager).apply(annotation, new Callable<Long>() {
-        @Override public Long call() {
-            Account sap = new Account();
-            sap.setUsername("sap");
-            sap.setPassword("pas");
-            sap.setEmail("gsapountzis@gmail.com");
+        AccountRepository accountRepository = new AccountRepository(transactionalDataSource);
+        AccountResource accountResource = new AccountResource(accountRepository);
+    }
+}
+```
 
-            return accountRepository.create(sap);
-        }
-    });
+```java
+public class AccountResource {
+    private final TransactionManager transactionManager;
+    private final AccountRepository accountRepository;
+
+    public AccountResource(TransactionManager transactionManager, AccountRepository accountRepository) {
+        this.transactionManager = transactionManager;
+        this.accountRepository = accountRepository;
+    }
+
+    public Long createAccount() {
+        Transactional annotation = TxConfig.propagation(REQUIRES_NEW).build();
+        return new TransactionInterceptor(transactionManager).apply(annotation, new Callable<Long>() {
+            @Override public Long call() {
+                Account sap = new Account();
+                sap.setUsername("sap");
+                sap.setPassword("pas");
+                sap.setEmail("gsapountzis@gmail.com");
+
+                return accountRepository.create(sap);
+            }
+        });
+    }
+}
 ```
 
 ## Credits
