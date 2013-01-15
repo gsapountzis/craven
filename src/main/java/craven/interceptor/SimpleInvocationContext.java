@@ -9,9 +9,7 @@ import javax.interceptor.InvocationContext;
 public class SimpleInvocationContext implements InvocationContext {
 
     private final Object target;
-
     private final Method method;
-
     private Object[] parameters;
 
     private final Map<String, Object> contextData = new HashMap<String, Object>();

@@ -25,7 +25,6 @@ public class TransactionInterceptor {
     }
 
     public Object around(final InvocationContext ic) throws Exception {
-
         Object target = ic.getTarget();
         Method method = ic.getMethod();
 
@@ -65,6 +64,8 @@ public class TransactionInterceptor {
 
             T result = function.call();
 
+            // The transaction manager guarantees than when commit or rollback complete, the thread is no longer
+            // associated with a transaction.
             if (tm.getStatus() == Status.MARKED_ROLLBACK) {
                 logger.debug("Rolling back transaction (marked)");
                 tm.rollback();
@@ -77,7 +78,6 @@ public class TransactionInterceptor {
             return result;
         }
         catch (Exception ex) {
-            // The transaction manager guarantees than when commit or rollback complete, the thread is no longer associated with a transaction.
             if (tm.getStatus() != Status.NO_TRANSACTION) {
                 // An active transaction means this was an application exception.
                 try {
@@ -94,7 +94,6 @@ public class TransactionInterceptor {
     }
 
     private static <A extends Annotation> A getAnnotation(Class<A> annotationType, Object target, Method method) {
-
         A annotation = getAnnotation(annotationType, method);
         if (annotation != null) {
             return annotation;

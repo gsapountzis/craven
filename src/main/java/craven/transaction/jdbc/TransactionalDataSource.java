@@ -26,8 +26,7 @@ public class TransactionalDataSource extends DelegatingDataSource {
     @Override
     public Connection getConnection() throws SQLException {
         return getConnection(new ConnectionProvider() {
-            @Override
-            public Connection get() throws SQLException {
+            @Override public Connection get() throws SQLException {
                 return delegate().getConnection();
             }
         });
@@ -36,8 +35,7 @@ public class TransactionalDataSource extends DelegatingDataSource {
     @Override
     public Connection getConnection(final String username, final String password) throws SQLException {
         return getConnection(new ConnectionProvider() {
-            @Override
-            public Connection get() throws SQLException {
+            @Override public Connection get() throws SQLException {
                 return delegate().getConnection(username, password);
             }
         });

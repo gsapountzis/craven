@@ -15,7 +15,7 @@ public interface TransactionManager {
     public void begin(Transactional annotation) throws IllegalStateException, SystemException;
 
     /**
-     * Complete the transaction associated with the current thread.
+     * Commit the transaction associated with the current thread.
      *
      * When this method completes, the thread is no longer associated with a transaction.
      */

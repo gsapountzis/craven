@@ -8,19 +8,12 @@ import craven.transaction.TransactionContext;
 
 public class JdbcTransactionContext implements TransactionContext {
 
-    // -- Attributes
-
     private Connection connection;
 
     // saved values of changed transaction attibutes - a null value means no change
-
     private Boolean previousAutoCommit;
-
     private TxIsolation previousIsolation;
-
     private Boolean previousReadOnly;
-
-    // -- Constructors
 
     public JdbcTransactionContext() {
     }

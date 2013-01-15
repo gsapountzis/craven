@@ -15,15 +15,13 @@ public abstract class TransactionManagerTemplate<ContextType extends Transaction
     private static final Logger logger = LoggerFactory.getLogger(TransactionManagerTemplate.class);
 
     private final ThreadLocal<Status> status = new ThreadLocal<Status>() {
-        @Override
-        protected Status initialValue() {
+        @Override protected Status initialValue() {
             return Status.NO_TRANSACTION;
         }
     };
 
     private final ThreadLocal<ContextType> context = new ThreadLocal<ContextType>() {
-        @Override
-        protected ContextType initialValue() {
+        @Override protected ContextType initialValue() {
             return createTransactionContext();
         }
     };
