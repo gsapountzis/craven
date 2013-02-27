@@ -16,7 +16,7 @@ public class DataSourceProducer {
     private final DataSource dataSource;
 
     public DataSourceProducer() {
-        this.transactionManager = new JdbcTransactionManager(mainDataSource);;
+        this.transactionManager = new JdbcTransactionManager(mainDataSource);
         this.dataSource = new TransactionalDataSource(transactionManager);
     }
 
@@ -34,10 +34,11 @@ public class DataSourceProducer {
 
 ```java
 public class AccountRepository {
+    private final DataSource dataSource;
 
     @Inject
     public AccountRepository(DataSource dataSource) {
-        // ...
+        this.dataSource = dataSource;
     }
 }
 ```
