@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 public abstract class DelegatingConnection implements Connection {
 
@@ -217,6 +218,30 @@ public abstract class DelegatingConnection implements Connection {
     }
 
     @Override
+    public String getSchema() throws SQLException {
+        checkOpen();
+        return delegate().getSchema();
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        checkOpen();
+        delegate().setSchema(schema);
+    }
+
+    @Override
+    public int getNetworkTimeout() throws SQLException {
+        checkOpen();
+        return delegate().getNetworkTimeout();
+    }
+
+    @Override
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        checkOpen();
+        delegate().setNetworkTimeout(executor, milliseconds);
+    }
+
+    @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
         checkOpen();
         return delegate().getTypeMap();
@@ -301,6 +326,11 @@ public abstract class DelegatingConnection implements Connection {
     @Override
     public void close() throws SQLException {
         delegate().close();
+    }
+
+    @Override
+    public void abort(Executor executor) throws SQLException {
+        delegate().abort(executor);
     }
 
     @Override

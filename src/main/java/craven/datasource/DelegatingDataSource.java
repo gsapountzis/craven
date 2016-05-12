@@ -3,6 +3,8 @@ package craven.datasource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -35,6 +37,11 @@ public abstract class DelegatingDataSource implements DataSource {
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
         delegate().setLogWriter(out);
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return delegate().getParentLogger();
     }
 
     // --
